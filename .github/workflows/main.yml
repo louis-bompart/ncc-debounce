@@ -22,13 +22,13 @@ jobs:
         run: |
           rm tsconfig.json
           cp tsconfig.esm.json tsconfig.json
-          npx @vercel/ncc build index.ts -o dist/esm
+          npx @vercel/ncc build index.ts -o dist/esm -m
           mv dist/esm/index.js dist/esm/index.mjs
       - name: Build CommonJS
         run: |
           rm tsconfig.json
           cp tsconfig.cjs.json tsconfig.json
-          npx @vercel/ncc build index.ts -o dist/cjs
+          npx @vercel/ncc build index.ts -o dist/cjs -m
           mv dist/cjs/index.js dist/cjs/index.cjs
       - name: Publish
         env:
