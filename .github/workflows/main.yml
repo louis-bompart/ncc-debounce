@@ -18,9 +18,11 @@ jobs:
         run: |
           npm i -D underscore@latest -E
           echo "underscore_version=$(npm show underscore@latest version)" >> $GITHUB_ENV
+          cp package.json package.json.bak
       - name: Build ESM
         if: ${{ !env.up_to_date }}
         run: |
+          cat package.json | jq '.type|= "module"' > package.json
           rm tsconfig.json
           cp tsconfig.esm.json tsconfig.json
           npx @vercel/ncc build index.ts -o dist/esm -m
@@ -28,6 +30,7 @@ jobs:
       - name: Build CommonJS
         if: ${{ !env.up_to_date }}
         run: |
+          cat package.json | jq '.type|= "commonjs"' > package.json
           rm tsconfig.json
           cp tsconfig.cjs.json tsconfig.json
           npx @vercel/ncc build index.ts -o dist/cjs -m
@@ -37,6 +40,8 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          rm package.json
+          mv package.json.bak package.json
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
           npm version ${{ env.underscore_version }} -f -m "release v%s"

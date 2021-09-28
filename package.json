@@ -7,7 +7,7 @@
   "main": "dist/index.cjs",
   "exports": {
     "import": "./dist/esm/index.mjs",
-    "require": "./dist/cjs/main-require.cjs"
+    "require": "./dist/cjs/index.cjs"
   },
   "scripts": {
     "build": "npx @vercel/ncc build index.ts"
