@@ -12,25 +12,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Check latest Underscore version
+        run: |
+          npm ci 
+          echo "outdated=$(npm outdated underscore)" >> $GITHUB_ENV
       - name: Update Underscore
+        if: ${{ env.outdated }}
         # TODO, use that for version:
         # echo "underscore_version=$(npm show underscore@latest version)" >> $GITHUB_ENV
         run:  |
-          npm i -D underscore@latest
+          npm i -D underscore@latest -E
           echo "underscore_version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
       - name: Build ESM
+        if: ${{ env.outdated }}
         run: |
           rm tsconfig.json
           cp tsconfig.esm.json tsconfig.json
           npx @vercel/ncc build index.ts -o dist/esm -m
           mv dist/esm/index.js dist/esm/index.mjs
       - name: Build CommonJS
+        if: ${{ env.outdated }}
         run: |
           rm tsconfig.json
           cp tsconfig.cjs.json tsconfig.json
           npx @vercel/ncc build index.ts -o dist/cjs -m
           mv dist/cjs/index.js dist/cjs/index.cjs
       - name: Publish
+        if: ${{ env.outdated }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
