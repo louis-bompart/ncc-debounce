@@ -1,6 +1,6 @@
 {
   "name": "ncc-debounce",
-  "version": "1.13.1",
+  "version": "1.13.1-fix.0",
   "description": "Standalone version of _.debounce, automatically built from https://github.com/jashkenas/underscore",
   "type": "module",
   "types": "index.d.ts",
