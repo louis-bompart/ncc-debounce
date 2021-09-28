@@ -14,7 +14,7 @@
  * of the trailing edge of the wait interval. Useful in circumstances like preventing accidental double
  *-clicks on a "submit" button from firing a second time.
  * @param fn Function to debounce `waitMS` ms.
- * @param {number} [wait=100] The number of milliseconds to wait before `fn` can be invoked again.
+ * @param {number} wait The number of milliseconds to wait before `fn` can be invoked again.
  * @param {boolean} [immediate=false] True if `fn` should be invoked on the leading edge of `waitMS` instead of the trailing edge.
  * @return {Function} Debounced version of `fn` that waits `wait` ms when invoked.
  * Scheduled execution can be canceled using `debouncedFunc.cancel()`.
