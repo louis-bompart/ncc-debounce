@@ -28,6 +28,7 @@ jobs:
       - name: Set version manually
         if: ${{ github.event.inputs.version != '' }}
         run: |
+          npm ci
           echo "up_to_date=manualOverride" >> $GITHUB_ENV
           echo "underscore_version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
           cp package.json package.json.bak
