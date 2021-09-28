@@ -20,19 +20,19 @@ jobs:
           npm ci 
           echo "up_to_date=$(npm outdated underscore --parseable)" >> $GITHUB_ENV
       - name: Update Underscore
-        if: ${{ !env.up_to_date && github.event.inputs.version }}
+        if: ${{ env.up_to_date != '' && github.event.inputs.version == '' }}
         run: |
           npm i -D underscore@latest -E
           echo "underscore_version=$(npm show underscore@latest version)" >> $GITHUB_ENV
           cp package.json package.json.bak
       - name: Set version manually
-        if: ${{ !github.event.inputs.version }}
+        if: ${{ github.event.inputs.version != '' }}
         run: |
           echo "up_to_date=manualOverride" >> $GITHUB_ENV
           echo "underscore_version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
           cp package.json package.json.bak
       - name: Build ESM
-        if: ${{ !env.up_to_date }}
+        if: ${{ env.up_to_date != '' }}
         run: |
           pkgjson="$(jq '.type|= "module"' package.json)"
           echo "${pkgjson}" > package.json
@@ -41,7 +41,7 @@ jobs:
           npx @vercel/ncc build index.ts -o dist/esm -m
           mv dist/esm/index.js dist/esm/index.mjs
       - name: Build CommonJS
-        if: ${{ !env.up_to_date }}
+        if: ${{ env.up_to_date != '' }}
         run: |
           pkgjson="$(jq '.type|= "commonjs"' package.json)"
           echo "${pkgjson}" > package.json
@@ -49,7 +49,7 @@ jobs:
           npx @vercel/ncc build index.ts -o dist/cjs -m
           mv dist/cjs/index.js dist/cjs/index.cjs
       - name: Publish
-        if: ${{ !env.up_to_date }}
+        if: ${{ env.up_to_date != '' }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
