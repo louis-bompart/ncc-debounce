@@ -34,7 +34,8 @@ jobs:
       - name: Build ESM
         if: ${{ !env.up_to_date }}
         run: |
-          cat package.json | jq '.type|= "module"' > package.json
+          pkgjson="$(jq '.type|= "module"' package.json)"
+          echo "${pkgjson}" > package.json
           rm tsconfig.json
           cp tsconfig.esm.json tsconfig.json
           npx @vercel/ncc build index.ts -o dist/esm -m
@@ -42,8 +43,8 @@ jobs:
       - name: Build CommonJS
         if: ${{ !env.up_to_date }}
         run: |
-          cat package.json | jq '.type|= "commonjs"' > package.json
-          rm tsconfig.json
+          pkgjson="$(jq '.type|= "commonjs"' package.json)"
+          echo "${pkgjson}" > package.json
           cp tsconfig.cjs.json tsconfig.json
           npx @vercel/ncc build index.ts -o dist/cjs -m
           mv dist/cjs/index.js dist/cjs/index.cjs
