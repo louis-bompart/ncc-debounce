@@ -1,10 +1,16 @@
 {
   "name": "ncc-debounce",
-  "version": "1.0.0",
-  "description": "Yet ANother Debounce package",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "Standalone version of _.debounce, automatically built from https://github.com/jashkenas/underscore",
+  "type": "module",
+  "types": "index.d.ts",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/esm/index.mjs",
+    "require": "./dist/cjs/main-require.cjs"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx @vercel/ncc build index.ts"
   },
   "repository": {
     "type": "git",
@@ -19,6 +25,7 @@
   "homepage": "https://github.com/louis-bompart/ncc-debounce#readme",
   "devDependencies": {
     "@types/underscore": "^1.11.3",
+    "prettier": "^2.4.1",
     "typescript": "^4.4.3",
     "underscore": "^1.13.1"
   }
