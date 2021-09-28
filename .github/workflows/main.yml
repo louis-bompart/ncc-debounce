@@ -1,6 +1,8 @@
 name: CD
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   build:
@@ -8,10 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check latest Underscore version
-        if: ${{ false }}
         run: |
           npm ci 
-          echo "up_to_date=$(npm outdated underscore)" >> $GITHUB_ENV
+          echo "up_to_date=$(npm outdated underscore --parseable)" >> $GITHUB_ENV
       - name: Update Underscore
         if: ${{ !env.up_to_date }}
         run: |
