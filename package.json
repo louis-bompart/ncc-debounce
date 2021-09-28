@@ -16,8 +16,17 @@
     "type": "git",
     "url": "git+https://github.com/louis-bompart/ncc-debounce.git"
   },
-  "keywords": [],
-  "author": "",
+  "files": [
+    "dist/**/*",
+    "index.d.ts"
+  ],
+  "keywords": [
+    "debounce",
+    "underscore",
+    "ESM",
+    "CJS"
+  ],
+  "author": "Louis Bompart <louis.vincent.bompart@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/louis-bompart/ncc-debounce/issues"
