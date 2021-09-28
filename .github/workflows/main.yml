@@ -1,8 +1,13 @@
 name: CD
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Override version"
+        required: false
+        default: ""
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   build:
@@ -10,14 +15,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check latest Underscore version
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
           npm ci 
           echo "up_to_date=$(npm outdated underscore --parseable)" >> $GITHUB_ENV
       - name: Update Underscore
-        if: ${{ !env.up_to_date }}
+        if: ${{ !env.up_to_date && github.event.inputs.version }}
         run: |
           npm i -D underscore@latest -E
           echo "underscore_version=$(npm show underscore@latest version)" >> $GITHUB_ENV
+          cp package.json package.json.bak
+      - name: Set version manually
+        if: ${{ !github.event.inputs.version }}
+        run: |
+          echo "up_to_date=manualOverride" >> $GITHUB_ENV
+          echo "underscore_version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
           cp package.json package.json.bak
       - name: Build ESM
         if: ${{ !env.up_to_date }}
