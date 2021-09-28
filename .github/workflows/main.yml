@@ -1,0 +1,43 @@
+name: CD
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'input version for testing yknow'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update Underscore
+        # TODO, use that for version:
+        # echo "underscore_version=$(npm show underscore@latest version)" >> $GITHUB_ENV
+        run:  |
+          npm i -D underscore@latest
+          echo "underscore_version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Build ESM
+        run: |
+          rm tsconfig.json
+          cp tsconfig.esm.json tsconfig.json
+          npx @vercel/ncc build index.ts -o dist/esm
+          mv dist/esm/index.js dist/esm/index.mjs
+      - name: Build CommonJS
+        run: |
+          rm tsconfig.json
+          cp tsconfig.cjs.json tsconfig.json
+          npx @vercel/ncc build index.ts -o dist/cjs
+          mv dist/cjs/index.js dist/cjs/index.cjs
+      - name: Publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          git config --global user.email action@github.com
+          git config --global user.name GitHub Action
+          npm version ${{ env.underscore_version }} -f -m "release v%s"
+          git push
+          git push --tags
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
+          npm publish
